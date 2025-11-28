@@ -453,7 +453,7 @@ export default function BikerBirthday() {
                 </h2>
               </div>
               <p className="text-lg sm:text-xl md:text-2xl text-orange-300 font-bold drop-shadow-lg uppercase mt-2">
-                Memories on the Road 🏍️
+                Path of the memories 🏍️
               </p>
             </div>
 
@@ -532,68 +532,72 @@ export default function BikerBirthday() {
       )}
 
 {/* Message Section */}
-     {/* Message Section */}
-      {activeSection === 'message' && (
-        <div className="relative z-10 py-20 px-4 animate-fade-in">
-          <div className="max-w-4xl mx-auto bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-2xl rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-orange-500/40 hover:border-orange-400 transition-all duration-500">
+    
+  {activeSection === 'message' && (
+    <div className="relative z-10 py-20 px-4 animate-fade-in">
+        <div className="max-w-4xl mx-auto bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-2xl rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-orange-500/40 hover:border-orange-400 transition-all duration-500">
             <div className="space-y-6 text-white">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-center mb-8 uppercase tracking-tight flex items-center justify-center gap-4">
-                <span className="text-5xl">💌</span>
-                <span className="bg-gradient-to-r from-orange-400 via-red-500 to-pink-600 bg-clip-text text-transparent">
-                  A Love Letter
-                </span>
-                <span className="text-5xl">💌</span>
-              </h2>
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-center mb-8 uppercase tracking-tight flex items-center justify-center gap-4">
+                    <span className="text-5xl">💌</span>
+                    <span className="bg-gradient-to-r from-orange-400 via-red-500 to-pink-600 bg-clip-text text-transparent">
+                        A Birthday Love Letter
+                    </span>
+                    <span className="text-5xl">💌</span>
+                </h2>
 
-              <div className="space-y-5 text-base sm:text-lg leading-relaxed text-gray-100">
-                <p className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                  I don't know where to start but choosing you is the <span className="text-orange-400 font-bold">best decision of my life</span>. Like I feel a different kind of comfort when you're around me. You're the chaotic calm in the chaos. The way you always over-explain every time overthink and reassure me to calm me down and bring me peace—I'm so grateful to have you by my side.
-                </p>
+                <div className="space-y-5 text-base sm:text-lg leading-relaxed text-gray-100">
+                    {/* PARAGRAPH 1 */}
+                    <p className="animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                        I don't know where to start but choosing you is the <span className="text-orange-400 font-bold">best decision of my life</span>. Like I feel a different kind of comfort when you're around me. You're the chaotic calm in the chaos. The way you always over-explain every time I overthink and reassures me to calm me down and bring me peace—I'm so grateful to have you by my side.
+                    </p>
 
-                <p className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                  Whether it's exam stress or late night anxiety you have always been here for me. Comforted me. Allowed me and made me understand that it's okay to feel anything and everything. Because of you I allowed myself to feel and acknowledge something I was running from and either it's our special hug or the way you convince me over literally anything I just feel so <span className="text-orange-400 font-bold">lucky to have you</span>.
-                </p>
+                    {/* PARAGRAPH 2 */}
+                    <p className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                        Whether it's exam stress or late night anxiety you have always been here for me. Comforted me. Allowed me and made me understand that it's okay to feel anything and everything. Because of you I allowed myself to feel and acknowledge something I was running from and either it's our special hug or the way you convince me over literally anything I just feel so <span className="text-orange-400 font-bold">lucky to have you</span>.
+                    </p>
 
-                <p className="animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                  With you I don't need to pretend. You always already know how I would feel about a particular thing. You know exactly what I want, when I want you to stay even when I say to leave and somehow You always know my silence more than words. I didn't know I needed someone like you until~ I met the one. I can't imagine my life without you....I wanna <span className="text-orange-400 font-bold">achieve everything with you together</span>. Always stick by my side.
-                </p>
+                    {/* PARAGRAPH 3 (Combined intimacy section) */}
+                    <p className="animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
+                        With you I don't need to pretend. You always already know how I would feel about a particular thing. You know exactly what I want, when I want you to stay even when I say to leave, and somehow **You always know my silence more than words**. I didn't know I needed someone like you until I met the one. I can't imagine my life without you....I wanna <span className="text-orange-400 font-bold">achieve everything with you together</span>. Always stick by my side.
+                    </p>
 
-                <p className="animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                  I can't find someone better I don't want too I just want to everyday. You're the <span className="text-orange-400 font-bold">bestestestest</span>. 💕
-                </p>
-              </div>
+                    {/* PARAGRAPH 4 (Final affirmation) */}
+                    <p className="animate-fade-in-up" style={{ animationDelay: '0.7s' }}>
+                        I can't find someone better and I don't want to. I just want you everyday. You're the <span className="text-orange-400 font-bold">bestestestest</span>.
+                    </p>
+                </div>
 
-              <div className="pt-8 text-center animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
-                <p className="text-xl sm:text-2xl font-bold text-orange-400 mb-2 italic">
-                  ~With love
-                </p>
-                <p className="text-2xl md:text-3xl font-black flex items-center justify-center gap-2">
-                  <span className="bg-gradient-to-r from-orange-400 via-red-500 to-pink-600 bg-clip-text text-transparent">
-                    Your Choti bachhi
-                  </span>
-                  <span className="text-3xl">💖</span>
-                </p>
-              </div>
+                <div className="pt-8 text-center animate-fade-in-up" style={{ animationDelay: '0.9s' }}>
+                    <p className="text-xl sm:text-2xl font-bold text-orange-400 mb-2 italic">
+                        ~With love
+                    </p>
+                    <p className="text-2xl md:text-3xl font-black flex items-center justify-center gap-2">
+                        <span className="bg-gradient-to-r from-orange-400 via-red-500 to-pink-600 bg-clip-text text-transparent">
+                            Your Choti bachhi
+                        </span>
+                        <span className="text-3xl">💖</span>
+                    </p>
+                </div>
             </div>
 
             <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-              {[...Array(12)].map((_, i) => (
-                <Flame
-                  key={i}
-                  className="absolute text-orange-500/15 animate-float-icon"
-                  size={30 + Math.random() * 25}
-                  style={{
-                    left: `${10 + i * 8}%`,
-                    top: `${10 + Math.random() * 80}%`,
-                    animationDelay: `${i * 0.3}s`,
-                    animationDuration: `${6 + Math.random() * 4}s`,
-                  }}
-                />
-              ))}
+                {[...Array(12)].map((_, i) => (
+                    <Flame
+                        key={i}
+                        className="absolute text-orange-500/15 animate-float-icon"
+                        size={30 + Math.random() * 25}
+                        style={{
+                            left: `${10 + i * 8}%`,
+                            top: `${10 + Math.random() * 80}%`,
+                            animationDelay: `${i * 0.3}s`,
+                            animationDuration: `${6 + Math.random() * 4}s`,
+                        }}
+                    />
+                ))}
             </div>
-          </div>
         </div>
-      )}
+    </div>
+)}
       {/* Modal - Added classes for GSAP targeting */}
       {modal.open && (
         <div
