@@ -540,7 +540,7 @@ export default function BikerBirthday() {
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-center mb-8 uppercase tracking-tight flex items-center justify-center gap-4">
                     <span className="text-5xl">💌</span>
                     <span className="bg-gradient-to-r from-orange-400 via-red-500 to-pink-600 bg-clip-text text-transparent">
-                        A Birthday Love Letter
+                        A Love Letter
                     </span>
                     <span className="text-5xl">💌</span>
                 </h2>
