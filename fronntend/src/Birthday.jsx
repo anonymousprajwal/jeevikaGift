@@ -1,5 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, X, Zap, Flame, Trophy, Target, Sparkles } from 'lucide-react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
 import pic1 from './assets/pic1.jpg';
 import pic2 from './assets/pic2.jpg';
 import pic3 from './assets/pic3.jpg';
@@ -8,65 +13,35 @@ import pic4 from './assets/pic4.jpg';
 const images = [pic1, pic2, pic3, pic4];
 
 
-
-// GSAP CDN Integration
-const loadGSAP = () => {
-  return new Promise((resolve) => {
-    if (window.gsap) {
-      resolve(window.gsap);
-      return;
-    }
-    
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
-    script.onload = () => {
-      const scrollTriggerScript = document.createElement('script');
-      scrollTriggerScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js';
-      scrollTriggerScript.onload = () => {
-        window.gsap.registerPlugin(window.ScrollTrigger);
-        resolve(window.gsap);
-      };
-      document.head.appendChild(scrollTriggerScript);
-    };
-    document.head.appendChild(script);
-  });
-};
-
-// Sample images - replace with your actual images
-
-
 export default function BikerBirthday() {
   const [loaded, setLoaded] = useState(false);
   const [showTitle, setShowTitle] = useState(false);
   const [modal, setModal] = useState({ open: false, index: 0 });
   const [activeSection, setActiveSection] = useState('hero');
   const [hoveredImage, setHoveredImage] = useState(null);
-  const [gsapReady, setGsapReady] = useState(false);
-  
+  const [gsapReady] = useState(true); // Always true
+
   const galleryRef = useRef(null);
   const imageRefs = useRef([]);
   const cardRefs = useRef([]);
   const heroRef = useRef(null);
 
-  // Load GSAP
+  // Initialize Component State
   useEffect(() => {
-    loadGSAP().then(() => {
-      setGsapReady(true);
-      setTimeout(() => setLoaded(true), 100);
-      setTimeout(() => setShowTitle(true), 600);
-    });
+    // Simulate initial loading sequence
+    setTimeout(() => setLoaded(true), 100);
+    setTimeout(() => setShowTitle(true), 600);
   }, []);
 
-  // Hero animations
+  // Hero animations (Unchanged, they look fine)
   useEffect(() => {
-    if (!gsapReady || !loaded || !showTitle || activeSection !== 'hero' || !heroRef.current) return;
+    if (!loaded || !showTitle || activeSection !== 'hero' || !heroRef.current) return;
 
-    const gsap = window.gsap;
-    const tl = gsap.timeline({ 
+    const tl = gsap.timeline({
       delay: 0.2,
       defaults: { ease: 'power3.out' }
     });
-    
+
     tl.from('.hero-bike', {
       scale: 0,
       rotation: -180,
@@ -105,22 +80,17 @@ export default function BikerBirthday() {
     }, '-=0.2');
 
     return () => tl.kill();
-  }, [gsapReady, loaded, showTitle, activeSection]);
+  }, [loaded, showTitle, activeSection]);
 
-  // Gallery scroll animations
+  // Gallery scroll animations (Optimized for performance)
   useEffect(() => {
-    if (!gsapReady || activeSection !== 'gallery') return;
+    if (activeSection !== 'gallery' || !galleryRef.current) return;
 
-    const gsap = window.gsap;
-    const ScrollTrigger = window.ScrollTrigger;
-
-    ScrollTrigger.config({ 
-      autoRefreshEvents: 'visibilitychange,DOMContentLoaded,load',
-      limitCallbacks: true
-    });
+    // Refresh ScrollTrigger when switching to this section
+    ScrollTrigger.refresh();
 
     const ctx = gsap.context(() => {
-      // Animate gallery title
+      // 1. Animate gallery title (Snappier entrance, no scrub)
       const title = galleryRef.current?.querySelector('.gallery-title');
       if (title) {
         gsap.fromTo(title,
@@ -129,46 +99,44 @@ export default function BikerBirthday() {
             opacity: 1,
             y: 0,
             scale: 1,
-            duration: 1.5,
+            duration: 1.2, // Faster
             ease: 'power4.out',
             scrollTrigger: {
               trigger: galleryRef.current,
-              start: 'top 80%',
+              start: 'top 70%', // Trigger higher up
               toggleActions: 'play none none reverse',
             }
           }
         );
       }
 
-      // Animate each image with unique effects
+      // 2. Animate each image and info card
       imageRefs.current.forEach((el, i) => {
         if (!el) return;
 
-        // Different entrance directions
+        // Simplified entrance effects: less 3D rotation, more scaling/translation
         const direction = i % 4;
-        let fromVars = { 
-          opacity: 0, 
-          scale: 0.6,
-          rotationY: 0,
+        let fromVars = {
+          opacity: 0,
+          scale: 0.7,
+          rotation: 0,
           x: 0,
           y: 0,
         };
         
         if (direction === 0) {
-          fromVars.x = -1000;
-          fromVars.rotationY = -90;
+          fromVars.x = -400;
+          fromVars.rotation = -10;
         } else if (direction === 1) {
-          fromVars.x = 1000;
-          fromVars.rotationY = 90;
+          fromVars.x = 400;
+          fromVars.rotation = 10;
         } else if (direction === 2) {
-          fromVars.y = -800;
-          fromVars.scale = 0.3;
+          fromVars.y = -300;
         } else {
-          fromVars.y = 800;
-          fromVars.scale = 0.3;
+          fromVars.y = 300;
         }
 
-        // Image animation
+        // Image animation - REDUCED SCRUB and SIMPLIFIED EASE
         gsap.fromTo(el, 
           fromVars,
           {
@@ -176,74 +144,75 @@ export default function BikerBirthday() {
             scale: 1,
             x: 0,
             y: 0,
-            rotationY: 0,
-            ease: 'power4.out',
+            rotation: 0,
+            ease: 'power3.out',
             scrollTrigger: {
               trigger: el,
-              start: 'top 90%',
-              end: 'top 20%',
+              start: 'top 85%', // Adjusted start
+              end: 'top 40%', // Adjusted end
               toggleActions: 'play none none reverse',
-              scrub: 2,
+              scrub: 0.8, // Reduced scrub for less lag
             }
           }
         );
 
-        // Card animation (info boxes)
+        // Card animation (info boxes) - REDUCED SCRUB and SIMPLIFIED EASE
         const card = cardRefs.current[i];
         if (card) {
           const isLeft = i % 2 === 0;
           gsap.fromTo(card,
             {
               opacity: 0,
-              x: isLeft ? -400 : 400,
-              scale: 0.6,
-              rotation: isLeft ? -15 : 15,
+              x: isLeft ? -100 : 100, // Reduced translation distance
+              scale: 0.8, // Subtle scale
             },
             {
               opacity: 1,
               x: 0,
               scale: 1,
               rotation: 0,
-              ease: 'power4.out',
+              ease: 'power3.out',
               scrollTrigger: {
                 trigger: el,
-                start: 'top 85%',
-                end: 'top 25%',
+                start: 'top 80%', // Adjusted start
+                end: 'top 30%', // Adjusted end
                 toggleActions: 'play none none reverse',
-                scrub: 1.8,
+                scrub: 0.5, // Even lower scrub for a snappier feel
               }
             }
           );
         }
 
-        // Hover animation for images
+        // Hover animation (kept as GSAP for cool effect but ensure it's simple)
+        const imgContainer = el;
         const img = el.querySelector('img');
         if (img) {
-          el.addEventListener('mouseenter', () => {
+          // Use GSAP's built-in event listeners for better control
+          imgContainer.addEventListener('mouseenter', () => {
             gsap.to(img, {
-              scale: 1.2,
-              rotation: 3,
-              duration: 0.7,
+              scale: 1.1, // Reduced scale for less distortion/work
+              rotation: 2, // Subtle rotation
+              duration: 0.5,
               ease: 'power2.out',
             });
-            gsap.to(el, {
-              boxShadow: '0 25px 50px -12px rgba(251, 146, 60, 0.5)',
-              borderColor: 'rgba(251, 146, 60, 0.8)',
-              duration: 0.5,
+            gsap.to(imgContainer, {
+              boxShadow: '0 25px 50px -12px rgba(251, 146, 60, 0.6)',
+              borderColor: 'rgba(251, 146, 60, 1)',
+              duration: 0.3,
             });
           });
           
-          el.addEventListener('mouseleave', () => {
+          imgContainer.addEventListener('mouseleave', () => {
             gsap.to(img, {
               scale: 1,
               rotation: 0,
-              duration: 0.7,
+              duration: 0.5,
               ease: 'power2.out',
             });
-            gsap.to(el, {
+            gsap.to(imgContainer, {
               boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
               borderColor: 'rgba(251, 146, 60, 0.5)',
-              duration: 0.5,
+              duration: 0.3,
             });
           });
         }
@@ -252,22 +221,20 @@ export default function BikerBirthday() {
 
     return () => {
       ctx.revert();
-      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
-  }, [gsapReady, activeSection]);
+  }, [activeSection]);
 
   const openImage = (i) => {
     setModal({ open: true, index: i });
-    if (!gsapReady) return;
     
-    const gsap = window.gsap;
     const tl = gsap.timeline();
-    tl.from('.modal-overlay', {
+    // Use .modal-container instead of .modal-overlay for initial fade to avoid flicker
+    tl.from('.modal-container', {
       opacity: 0,
       duration: 0.4,
       ease: 'power2.out'
     })
-    .from('.modal-image', {
+    .from('.modal-content', { // Target a wrapper for the animation
       scale: 0.3,
       opacity: 0,
       rotation: 180,
@@ -277,13 +244,8 @@ export default function BikerBirthday() {
   };
 
   const close = () => {
-    if (!gsapReady) {
-      setModal({ open: false, index: modal.index });
-      return;
-    }
-    
-    const gsap = window.gsap;
-    gsap.to('.modal-overlay', {
+    // Target the main container for exit fade
+    gsap.to('.modal-container', {
       opacity: 0,
       duration: 0.3,
       ease: 'power2.in',
@@ -292,60 +254,47 @@ export default function BikerBirthday() {
   };
 
   const next = () => {
-    if (!gsapReady) {
-      setModal((m) => ({ ...m, index: (m.index + 1) % images.length }));
-      return;
-    }
-    
-    const gsap = window.gsap;
     const tl = gsap.timeline();
     tl.to('.modal-image', {
       x: -150,
       opacity: 0,
-      rotation: -20,
-      duration: 0.3,
+      rotation: -10, // Reduced rotation for speed
+      duration: 0.25, // Faster transition
       ease: 'power2.in'
     })
     .call(() => {
       setModal((m) => ({ ...m, index: (m.index + 1) % images.length }));
     })
     .fromTo('.modal-image',
-      { x: 150, opacity: 0, rotation: 20 },
-      { x: 0, opacity: 1, rotation: 0, duration: 0.5, ease: 'power3.out' }
+      { x: 150, opacity: 0, rotation: 10 },
+      { x: 0, opacity: 1, rotation: 0, duration: 0.4, ease: 'power3.out' } // Faster re-entry
     );
   };
 
   const prev = () => {
-    if (!gsapReady) {
-      setModal((m) => ({ ...m, index: (m.index - 1 + images.length) % images.length }));
-      return;
-    }
-    
-    const gsap = window.gsap;
     const tl = gsap.timeline();
     tl.to('.modal-image', {
       x: 150,
       opacity: 0,
-      rotation: 20,
-      duration: 0.3,
+      rotation: 10, // Reduced rotation for speed
+      duration: 0.25, // Faster transition
       ease: 'power2.in'
     })
     .call(() => {
       setModal((m) => ({ ...m, index: (m.index - 1 + images.length) % images.length }));
     })
     .fromTo('.modal-image',
-      { x: -150, opacity: 0, rotation: -20 },
-      { x: 0, opacity: 1, rotation: 0, duration: 0.5, ease: 'power3.out' }
+      { x: -150, opacity: 0, rotation: -10 },
+      { x: 0, opacity: 1, rotation: 0, duration: 0.4, ease: 'power3.out' } // Faster re-entry
     );
   };
 
   return (
     <div className="min-h-screen relative overflow-x-hidden bg-slate-900">
-      {/* Enhanced gradient background */}
+      {/* ... (Background setup is unchanged) ... */}
       <div className="fixed inset-0 bg-gradient-to-br from-sky-500 via-blue-600 to-slate-900" />
       <div className="fixed inset-0 bg-gradient-to-tl from-rose-900/70 via-red-800/50 to-transparent" />
       
-      {/* Animated mesh gradient */}
       <div className="fixed inset-0 opacity-20">
         <div className="absolute top-0 -left-20 w-[600px] h-[600px] bg-gradient-to-br from-orange-500 to-red-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob" />
         <div className="absolute top-0 -right-20 w-[600px] h-[600px] bg-gradient-to-bl from-sky-400 to-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000" />
@@ -353,7 +302,6 @@ export default function BikerBirthday() {
         <div className="absolute bottom-20 right-20 w-[600px] h-[600px] bg-gradient-to-tl from-red-700 to-pink-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-3000" />
       </div>
 
-      {/* Speed particles */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         {[...Array(50)].map((_, i) => (
           <div
@@ -374,7 +322,6 @@ export default function BikerBirthday() {
         ))}
       </div>
 
-      {/* Floating icons with better animation */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         {[...Array(25)].map((_, i) => {
           const Icon = [Zap, Flame, Trophy, Target, Sparkles][i % 5];
@@ -398,8 +345,9 @@ export default function BikerBirthday() {
           );
         })}
       </div>
+      {/* --- */}
 
-      {/* Enhanced navigation */}
+      {/* Navigation */}
       <nav className="sticky top-0 z-50 p-6 flex justify-center gap-4 backdrop-blur-md bg-slate-900/20">
         {[
           { id: 'hero', icon: '🏍️', label: 'Home' },
@@ -428,7 +376,7 @@ export default function BikerBirthday() {
       {activeSection === 'hero' && (
         <div ref={heroRef} className="relative z-10 flex flex-col items-center justify-center min-h-[85vh] px-4 pt-10">
           <div className="text-center space-y-8 max-w-5xl">
-            {/* Animated bike icon */}
+            {/* ... (Hero content is unchanged) ... */}
             <div className="hero-bike relative inline-block">
               <div className="absolute inset-0 bg-orange-500/40 rounded-full blur-3xl animate-pulse-glow" />
               <div className="absolute inset-0 bg-gradient-to-r from-yellow-400 to-orange-600 rounded-full blur-2xl animate-pulse-slow" />
@@ -439,7 +387,6 @@ export default function BikerBirthday() {
               <div className="absolute -bottom-4 -left-4 text-3xl animate-spin-reverse">⚡</div>
             </div>
 
-            {/* Title animation */}
             <div className="space-y-2">
               <h1 className="hero-title-1 text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-white drop-shadow-2xl tracking-tight leading-none">
                 HAPPY
@@ -454,7 +401,6 @@ export default function BikerBirthday() {
                 Rev up for another <span className="text-orange-400 animate-pulse-fast inline-block">epic</span> year! 🔥
               </p>
               
-              {/* Icon row */}
               <div className="hero-icons flex justify-center gap-3 sm:gap-4 flex-wrap">
                 {[Zap, Flame, Trophy, Target, Sparkles, Zap].map((Icon, i) => (
                   <Icon
@@ -466,7 +412,6 @@ export default function BikerBirthday() {
                 ))}
               </div>
 
-              {/* CTA Button */}
               <div className="flex justify-center mt-12">
                 <button
                   onClick={() => setActiveSection('gallery')}
@@ -513,7 +458,7 @@ export default function BikerBirthday() {
                     key={i}
                     ref={(el) => (imageRefs.current[i] = el)}
                     className="min-h-[60vh] flex items-center justify-center"
-                    style={{ perspective: '1500px' }}
+                    // Removed style={{ perspective: '1500px' }} as it's no longer necessary with the simpler rotation
                   >
                     <div className="w-full flex flex-col md:flex-row items-center gap-8 md:gap-12">
                       {/* Info card */}
@@ -579,6 +524,7 @@ export default function BikerBirthday() {
       {/* Message Section */}
       {activeSection === 'message' && (
         <div className="relative z-10 py-20 px-4 animate-fade-in">
+          {/* ... (Message content is unchanged) ... */}
           <div className="max-w-4xl mx-auto bg-gradient-to-br from-slate-800/95 to-slate-900/95 backdrop-blur-2xl rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-orange-500/40 hover:border-orange-400 transition-all duration-500">
             <div className="space-y-6 text-white">
               <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-center mb-8 bg-gradient-to-r from-orange-400 via-red-500 to-pink-600 bg-clip-text text-transparent uppercase tracking-tight">
@@ -613,7 +559,6 @@ export default function BikerBirthday() {
               </div>
             </div>
 
-            {/* Decorative elements */}
             <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
               {[...Array(12)].map((_, i) => (
                 <Flame
@@ -633,10 +578,10 @@ export default function BikerBirthday() {
         </div>
       )}
 
-      {/* Modal */}
+      {/* Modal - Added classes for GSAP targeting */}
       {modal.open && (
         <div
-          className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in"
+          className="modal-container fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 backdrop-blur-xl animate-fade-in"
           onClick={close}
         >
           <button
@@ -663,17 +608,18 @@ export default function BikerBirthday() {
             <ChevronRight size={32} strokeWidth={2.5} />
           </button>
 
-          <div className="max-w-7xl max-h-[90vh] relative animate-scale-in" onClick={(e) => e.stopPropagation()}>
+          <div className="modal-content max-w-7xl max-h-[90vh] relative animate-scale-in" onClick={(e) => e.stopPropagation()}>
             <img
               src={images[modal.index]}
               alt={`Photo ${modal.index + 1}`}
-              className="max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl border-4 border-orange-500/40"
+              className="modal-image max-w-full max-h-[90vh] object-contain rounded-2xl shadow-2xl border-4 border-orange-500/40"
             />
           </div>
         </div>
       )}
 
       <style>{`
+        /* ... (CSS keyframes are unchanged) ... */
         @keyframes blob {
           0%, 100% { transform: translate(0, 0) scale(1); }
           25% { transform: translate(40px, -60px) scale(1.15); }
